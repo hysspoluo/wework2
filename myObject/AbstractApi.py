@@ -77,9 +77,9 @@ class AbstractApi(object) :
             return url
 
         for key, value in args.items() : 
-            if '?' in url : #get
+            if '?' in url : 
                 url += ('&' + key + '=' + value)
-            else :#post
+            else :
                 url += ('?' + key + '=' + value)
         return url
 
@@ -126,7 +126,6 @@ class AbstractApi(object) :
         errMsg = response.get('errmsg')
 
         if errCode is 0:
-            #如果没有问题，返回response
             return response 
         else:
             raise ApiException(errCode, errMsg)
