@@ -11,31 +11,18 @@ import random
 from CorpApi import *
 from weConf import *
 
-api = CorpApi(TestConf['CORP_ID'], TestConf["APP_SECRET"])
+api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
 
 try :
 ##
     response = api.httpCall(
-            CORP_API_TYPE['MESSAGE_SEND'],
-        {
-            "touser": "hyss_poluo",
-            "msgtype": "news",
-            "agentid": TestConf["APP_ID"],
+            CORP_API_TYPE['DEPARTMENT_LIST']
+    )
 
-            "news" : {
-                "articles" : [
-                    {
-                        "title" : "中秋节礼品领取",
-                        "description" : "今年中秋节公司有豪礼相送",
-                        "url" : "URL",
-                        "picurl" : "http://img4.imgtn.bdimg.com/it/u=3502443110,870820812&fm=26&gp=0.jpg"
-                    }
-                ]
-   },
-
-            "enable_id_trans": 0
-        })
-    print (response)
+    #print (response)
+    department = response["department"]
+    for item in department:
+        print(item["name"],item['parentid'])
     #chatid = response['chatid']
 except ApiException as e :
     print (e.errCode, e.errMsg)
