@@ -4,6 +4,7 @@ from userManager import Ui_Dialog
 from sys import argv,exit
 from CorpApi import *
 from weConf import *
+from test import Ui_Form
 
 api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
 def get_department():
@@ -22,6 +23,13 @@ def get_department():
         print(e.errCode, e.errMsg)
         # print('test')
 
+#排版布局
+def getScreenRect():
+    desktop = QApplication.desktop()
+    screenRect = desktop.screenGeometry()
+    return screenRect
+
+
 
 class MainDialog(QWidget,Ui_Dialog):
     def __init__(self,parent = None,title = "企业微信添加用户"):
@@ -29,6 +37,10 @@ class MainDialog(QWidget,Ui_Dialog):
         self.setupUi(self)
         self.title = title
         self.setWindowTitle(title)
+        #设置合适的窗口大小
+        screenReck = getScreenRect()
+        self.resize(screenReck.width()/2,screenReck.height()/2)
+
 
     def addPerson(self):
         user_name = self.lineEdit.text()
@@ -51,5 +63,7 @@ class MainDialog(QWidget,Ui_Dialog):
 if __name__ == "__main__":
     app = QApplication(argv)
     mainWindow = MainDialog()
+
+    #mainWindow = Ui_Form()
     mainWindow.show()
     exit(app.exec_())
