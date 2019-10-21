@@ -1,10 +1,11 @@
 from PyQt5 import (QtWidgets)
-from PyQt5.QtWidgets import (QWidget, QApplication)
-from userManager import Ui_Dialog
+from PyQt5.QtWidgets import (QWidget, QApplication,QMainWindow)
+
 from sys import argv,exit
 from CorpApi import *
 from weConf import *
-from test import Ui_Form
+
+from new import Ui_Form
 
 api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
 def get_department():
@@ -13,9 +14,15 @@ def get_department():
             CORP_API_TYPE['DEPARTMENT_LIST']
         )
 
-        # print (response)
-        #department = response["department"]
-        #for item in department:
+        #print (response)
+        department = response["department"]
+        print(len(department))
+        #print(department)
+        for item in department:
+
+            if item["parentid"] not in [5755148,5755146]:
+                department.remove(item)
+        print(len(department))
         #    print(item["name"], item['parentid'])
         # chatid = response['chatid']
     except ApiException as e:
@@ -31,7 +38,7 @@ def getScreenRect():
 
 
 
-class MainDialog(QWidget,Ui_Dialog):
+class MainDialog(QWidget,Ui_Form):#重写页面
     def __init__(self,parent = None,title = "企业微信添加用户"):
         super(MainDialog,self).__init__(parent = parent)
         self.setupUi(self)
@@ -42,19 +49,30 @@ class MainDialog(QWidget,Ui_Dialog):
         self.resize(screenReck.width()/2,screenReck.height()/2)
 
 
-    def addPerson(self):
-        user_name = self.lineEdit.text()
-        user_id = self.lineEdit_2.text()
-        user_mobile = self.lineEdit_3.text()
+    def add_person(self):
+
+        user_name = self.lineEdit_name.text()
+        user_phone = self.lineEdit_phone.text()
+        #user_department = self.comboBox_department.text()
+        user_id = self.lineEdit_id.text()
+        user_tag = self.lineEdit_tag.text()
+        user_mail = self.lineEdit_mail.text()+"@tio.org.cn"
         user_gender = self.get_gender()
-        print(user_gender)
+        mailFlag = self.get_mailFlag()
+
+        print(user_name,user_phone,user_id,user_tag,user_mail,user_gender,mailFlag)
+
 
     def get_gender(self):
-        if self.radioButton.isChecked():
+        if self.radioButton_man.isChecked():
             return "男"
         else:
             return "女"
-
+    def get_mailFlag(self):
+        if self.radioButton_yes.isChecked():
+            return 1
+        else:
+            return 0
 
 
 
@@ -63,7 +81,12 @@ class MainDialog(QWidget,Ui_Dialog):
 if __name__ == "__main__":
     app = QApplication(argv)
     mainWindow = MainDialog()
+    get_department()
+    #初始化数据
+    #获取部门列表
 
-    #mainWindow = Ui_Form()
+
     mainWindow.show()
+
+
     exit(app.exec_())
