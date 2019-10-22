@@ -6,8 +6,15 @@ from CorpApi import *
 from weConf import *
 
 from new import Ui_Form
+"""
+CORP_ID,所在单位的ID
+CONTACT_SYNC_SECRET，所在应用的SECRET
+"""
+
 
 api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
+
+
 
 """
 获取列表
@@ -43,6 +50,19 @@ def getScreenRect():
     screenRect = desktop.screenGeometry()
     return screenRect
 
+"""
+创建新用户
+"""
+
+def create_user(userInfo):
+    try:
+        response = api.httpCall(
+            CORP_API_TYPE['USER_CREATE'],userInfo)
+        #print(response)
+    except ApiException as e:
+        print(e.errCode, e.errMsg)
+
+
 
 
 class MainDialog(QWidget,Ui_Form):#重写页面
@@ -71,7 +91,15 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         user_gender = self.get_gender()
         mailFlag = self.get_mailFlag()
 
-        print(user_name,user_phone,user_id,user_tag,user_mail,user_gender,mailFlag)
+        userInfo = {
+            'userid': user_id,
+            'name': user_name,
+            'mobile': int(user_phone),
+            'email': 'zhangsan@ipp.cas.cn',
+            'department': 1,
+        }
+        create_user(userInfo)
+
 
 
     def get_gender(self):
@@ -79,12 +107,12 @@ class MainDialog(QWidget,Ui_Form):#重写页面
             return "男"
         else:
             return "女"
-    def get_mailFlag(self):
-        if self.radioButton_yes.isChecked():
-            return 1
-        else:
-            return 0
 
+    def addMailOrNot(self):
+        if self.radioButton_yes.isChecked():
+            self.lineEdit_mail.setEnabled(True)
+        else:
+            self.lineEdit_mail.setEnabled(False)
 
 
 
@@ -92,7 +120,6 @@ class MainDialog(QWidget,Ui_Form):#重写页面
 if __name__ == "__main__":
     app = QApplication(argv)
     mainWindow = MainDialog()
-
     #初始化数据
     #获取部门列表
 
