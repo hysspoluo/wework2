@@ -8,6 +8,17 @@ from weConf import *
 from new import Ui_Form
 
 api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
+
+"""
+获取列表
+getsortkey()-----部门列表的排序规则
+get_department()-----获得部门列表
+"""
+
+#获取部门列表
+def getSortKey(elem):
+    return elem["parentid"]
+
 def get_department():
     try:
         response = api.httpCall(
@@ -16,19 +27,15 @@ def get_department():
 
         #print (response)
         department = response["department"]
-        print(len(department))
-        #print(department)
+        department_new = []
         for item in department:
-
-            if item["parentid"] not in [5755148,5755146]:
-                department.remove(item)
-        print(len(department))
-        #    print(item["name"], item['parentid'])
-        # chatid = response['chatid']
+            if item["parentid"]  in (5755146,5755148):
+                department_new.append(item)
+        #print(department_new)
+        department_new.sort(key = getSortKey)
+        return department_new
     except ApiException as e:
-
         print(e.errCode, e.errMsg)
-        # print('test')
 
 #排版布局
 def getScreenRect():
@@ -44,6 +51,10 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         self.setupUi(self)
         self.title = title
         self.setWindowTitle(title)
+
+        department = get_department()
+        for item in department:
+            self.comboBox_department.addItem(item["name"])
         #设置合适的窗口大小
         screenReck = getScreenRect()
         self.resize(screenReck.width()/2,screenReck.height()/2)
@@ -81,7 +92,7 @@ class MainDialog(QWidget,Ui_Form):#重写页面
 if __name__ == "__main__":
     app = QApplication(argv)
     mainWindow = MainDialog()
-    get_department()
+
     #初始化数据
     #获取部门列表
 
