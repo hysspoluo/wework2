@@ -393,11 +393,20 @@
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLineEdit" name="lineEdit_mail">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>邮箱账号</string>
           </property>
          </widget>
         </item>
@@ -418,22 +427,6 @@
            <string>@tio.org.cn</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
@@ -535,6 +528,9 @@
             <width>16777215</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="placeholderText">
+           <string>唯一标识</string>
           </property>
          </widget>
         </item>
