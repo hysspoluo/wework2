@@ -54,14 +54,17 @@ def getScreenRect():
 创建新用户
 """
 
-def create_user(userInfo):
+def create_user(userInfo,self):
     try:
         response = api.httpCall(
             CORP_API_TYPE['USER_CREATE'],userInfo)
-        #print(response)
+        print(response)
     except ApiException as e:
+        response = (e.errCode, e.errMsg)
         print(e.errCode, e.errMsg)
 
+
+    self.textEdit_result.append("----添加结果-----\n"+str(response))
 
 
 
@@ -72,8 +75,8 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         self.title = title
         self.setWindowTitle(title)
 
-        department = get_department()
-        for item in department:
+        self.department = get_department()
+        for item in self.department:
             self.comboBox_department.addItem(item["name"])
         #设置合适的窗口大小
         screenReck = getScreenRect()
@@ -81,24 +84,38 @@ class MainDialog(QWidget,Ui_Form):#重写页面
 
 
     def add_person(self):
+        self.textEdit_result.setText("-----开始添加-----")
+        ############################################################
+        #采集基础信息，为后续添加做准备
 
         user_name = self.lineEdit_name.text()
         user_phone = self.lineEdit_phone.text()
-        #user_department = self.comboBox_department.text()
+        user_department = self.comboBox_department.currentText()
+        uer_department_id = self.department[self.comboBox_department.currentIndex()]["id"]
+        print(uer_department_id)
         user_id = self.lineEdit_id.text()
         user_tag = self.lineEdit_tag.text()
         user_mail = self.lineEdit_mail.text()+"@tio.org.cn"
         user_gender = self.get_gender()
-        mailFlag = self.get_mailFlag()
+        #mailFlag = self.get_mailFlag()
+
+        ##########################################################
+        #添加邮箱
+
+
+
+        ##########################################################
+        #添加企业微信账号
+
 
         userInfo = {
             'userid': user_id,
             'name': user_name,
             'mobile': int(user_phone),
             'email': 'zhangsan@ipp.cas.cn',
-            'department': 1,
+            'department': uer_department_id,
         }
-        create_user(userInfo)
+        create_user(userInfo,self)
 
 
 

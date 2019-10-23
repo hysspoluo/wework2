@@ -452,6 +452,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLineEdit" name="lineEdit_mail">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -559,8 +562,8 @@
    <slot>add_person()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>562</x>
-     <y>258</y>
+     <x>615</x>
+     <y>226</y>
     </hint>
     <hint type="destinationlabel">
      <x>629</x>
@@ -575,8 +578,8 @@
    <slot>addMailOrNot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>113</x>
-     <y>187</y>
+     <x>201</x>
+     <y>165</y>
     </hint>
     <hint type="destinationlabel">
      <x>162</x>
@@ -591,8 +594,8 @@
    <slot>addMailOrNot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>228</x>
-     <y>186</y>
+     <x>312</x>
+     <y>165</y>
     </hint>
     <hint type="destinationlabel">
      <x>280</x>
@@ -600,9 +603,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>587</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>576</x>
+     <y>396</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>add_person()</slot>
   <slot>addMailOrNot()</slot>
+  <slot>closeWindow()</slot>
  </slots>
 </ui>

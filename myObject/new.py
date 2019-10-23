@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'new.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -227,6 +227,7 @@ class Ui_Form(object):
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.lineEdit_mail = QtWidgets.QLineEdit(self.groupBox_2)
+        self.lineEdit_mail.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -277,6 +278,7 @@ class Ui_Form(object):
         self.pushButton_add.clicked.connect(Form.add_person)
         self.radioButton_yes.clicked.connect(Form.addMailOrNot)
         self.radioButton_no.clicked.connect(Form.addMailOrNot)
+        self.pushButton.clicked.connect(Form.close)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
