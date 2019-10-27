@@ -32,4 +32,9 @@ TestConf = {
     # 点进去有"api"按钮，点开后会看到
     "FREECALL_SECRET":"MGS8DT-avhI50sWO4bW62UrFWs1ODvu4sKl6DQvPfAo",
 
+    #腾讯企业邮箱相关信息
+    "MAIL_CORP_ID":"wm31c8f8cdf8a3a178",
+    #企业邮箱通讯录同步SECRET
+    "MAIL_CONTACT_SYNC_SECRET":"RIqryHksE0fhdfSxLPi76HwBb6T-3_CphkOE-GJrkE6Jb8vZEgTxF2tylP0mAALg"
+
 }
