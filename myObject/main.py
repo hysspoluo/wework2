@@ -154,11 +154,13 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         userInfo = {
             'userid': user_id,
             'name': user_name,
-            'gender':user_gender
+            'gender':user_gender,
             'mobile': int(user_phone),
             'tag': user_tag_id,
-            'email': 'zhangsan@ipp.cas.cn',
-            'department': uer_department_id,
+            'email': user_mail,
+            'department': user_department,
+            'department_id': uer_department_id,
+
         }
 
 
