@@ -46,8 +46,22 @@ def searchdepartmentID(departmentname):
         return departmentID
 
 
-
-
+def createUser(userInfo):
+    token = getToken()
+    departmentID = searchdepartmentID(userInfo["department"])
+    user = User(
+        access_token = token,
+        operation ='create',
+        userid = userInfo["mail"],
+        name = userInfo["username"],
+        department = [departmentID],
+        mobile = userInfo["phone"],
+        password = "Test@1234",
+        cpwd_login=1,
+        gender =  userInfo["gender"]
+    )
+    res2 = user.create_user()
+    print(res2)
 
 
 

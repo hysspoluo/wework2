@@ -219,7 +219,7 @@ class Ui_Form(object):
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.lineEdit_mail = QtWidgets.QLineEdit(self.groupBox_2)
-        self.lineEdit_mail.setEnabled(False)
+        self.lineEdit_mail.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

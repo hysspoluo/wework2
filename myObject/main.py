@@ -4,16 +4,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from sys import argv,exit
-from CorpApi import *
-from weConf import *
+#from CorpApi import *
+#from weConf import *
+from wechatManager import *
+from mailManager import *
 from new import Ui_Form
-"""
-CORP_ID,所在单位的ID
-CONTACT_SYNC_SECRET，所在应用的SECRET
-"""
 
-
-api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
 
 wechatFlag = 1
 mailFlag = 0
@@ -28,55 +24,6 @@ userInfo={
     "mail":""
 }
 
-
-
-"""
-getsortkey()-----部门列表的排序规则
-get_department()-----获得部门列表
-get_taglist()-----获取标签列表
-
-"""
-
-#####################################
-## 获取部门列表
-def getSortKey(elem):
-    return elem["parentid"]
-
-def get_department():
-    try:
-        response = api.httpCall(
-            CORP_API_TYPE['DEPARTMENT_LIST']
-        )
-
-        #print (response)
-        department = response["department"]
-        department_new = []
-        for item in department:
-            if item["parentid"]  in (5755146,5755148):
-                department_new.append(item)
-        #print(department_new)
-        department_new.sort(key = getSortKey)
-        return department_new
-    except ApiException as e:
-        print(e.errCode, e.errMsg)
-
-####################################
-#获取标签列表
-def get_taglist():
-    try:
-        response = api.httpCall(
-            CORP_API_TYPE['TAG_GET_LIST']
-        )
-
-        taglist = response["taglist"]
-        tagnamelist = []
-        for item in taglist:
-            tagnamelist.append(item["tagname"])
-
-        return (taglist,tagnamelist)
-
-    except ApiException as e:
-        print(e.errCode, e.errMsg)
 
 #排版布局
 def getScreenRect():
@@ -112,6 +59,10 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         (self.taglist,self.tagnamelist) = get_taglist()
         self.init_tageditline()
         self.init_departmentCombobox()#初始化部门下拉条
+        #电话号码正则表达式
+        my_regex = QRegExp("^[1]([3-9])[0-9]{9}$")
+        my_validator = QRegExpValidator(my_regex,self.lineEdit_phone)
+        self.lineEdit_phone.setValidator(my_validator)
         # 设置合适的窗口大小
         screenReck = getScreenRect()
         self.resize(screenReck.width()/2,screenReck.height()/2)
@@ -141,34 +92,27 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         completer.setCompletionMode(QCompleter.PopupCompletion)
         self.lineEdit_tag.setCompleter(completer)
 
+    def setUserInfo(self):
+        userInfo["username"] = self.lineEdit_name.text()
+        userInfo["phone"] = self.lineEdit_phone.text()
+        userInfo["department"] = self.comboBox_department.currentText()
+        #uer_department_id = self.department[self.comboBox_department.currentIndex()]["id"]
+        userInfo["wechatID"] = self.lineEdit_id.text()
+        userInfo["wechatTag"] = self.lineEdit_tag.text()
+        #user_tag_id = self.taglist[self.tagnamelist.index(user_tag)]["tagid"]
+        userInfo["mail"] = self.lineEdit_mail.text() + "@tio.org.cn"
+        userInfo["gender"] = self.get_gender()
 
 
     def add_person(self):
-        self.textEdit_result.setText("-----开始添加-----")
+        self.textEdit_result.setText("-----开始添加-----\h")
         ############################################################
         #采集基础信息，为后续添加做准备
+        self.setUserInfo()
+        #新增邮箱
+        if mailFlag == 1:
+            mailManager.createUser(userInfo)
 
-        user_name = self.lineEdit_name.text()
-        user_phone = self.lineEdit_phone.text()
-        user_department = self.comboBox_department.currentText()
-        uer_department_id = self.department[self.comboBox_department.currentIndex()]["id"]
-        user_id = self.lineEdit_id.text()
-        user_tag = self.lineEdit_tag.text()
-        user_tag_id = self.taglist[self.tagnamelist.index(user_tag)]["tagid"]
-        user_mail = self.lineEdit_mail.text()+"@tio.org.cn"
-        user_gender = self.get_gender()
-        #生成用户信息
-        userInfo = {
-            'userid': user_id,
-            'name': user_name,
-            'gender':user_gender,
-            'mobile': int(user_phone),
-            'tag': user_tag_id,
-            'email': user_mail,
-            'department': user_department,
-            'department_id': uer_department_id,
-
-        }
 
 
 
@@ -203,15 +147,14 @@ class MainDialog(QWidget,Ui_Form):#重写页面
             wechatFlag = 1
         else:
             wechatFlag = 0
-        print(wechatFlag)
     def addToMail(self):
         if self.checkBox_mail.isChecked():
             mailFlag = 1
-            self.lineEdit_mail.setEnabled(True)
+            #self.lineEdit_mail.setEnabled(True)
         else:
             mailFlag = 0
-            self.lineEdit_mail.setEnabled(False)
-            self.lineEdit_mail.clear()
+            #self.lineEdit_mail.setEnabled(False)
+            #self.lineEdit_mail.clear()
 
 if __name__ == "__main__":
     app = QApplication(argv)
@@ -221,6 +164,5 @@ if __name__ == "__main__":
 
 
     mainWindow.show()
-
 
     exit(app.exec_())
