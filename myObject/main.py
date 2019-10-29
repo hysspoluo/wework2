@@ -18,6 +18,17 @@ api = CorpApi(TestConf['CORP_ID'], TestConf["CONTACT_SYNC_SECRET"])
 wechatFlag = 1
 mailFlag = 0
 
+userInfo={
+    "username":"",
+    "gender":1,
+    "department":"",
+    "phone":"",
+    "wechatID":"",
+    "wechatTag":"",
+    "mail":""
+}
+
+
 
 """
 getsortkey()-----部门列表的排序规则
@@ -97,14 +108,10 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         self.setupUi(self)
         self.title = title
         self.setWindowTitle(title)
-
         self.department = get_department()
         (self.taglist,self.tagnamelist) = get_taglist()
-
         self.init_tageditline()
-
         self.init_departmentCombobox()#初始化部门下拉条
-
         # 设置合适的窗口大小
         screenReck = getScreenRect()
         self.resize(screenReck.width()/2,screenReck.height()/2)

@@ -14,20 +14,45 @@ CORP_ID = TestConf["MAIL_CORP_ID"]
 CONTACT_SECRET = TestConf["MAIL_CONTACT_SYNC_SECRET"]
 
 
-
-
+###################################
+#获取秘钥
 def getToken():
     ex = GetAccessToken(corpid=CORP_ID, corpsecret=CONTACT_SECRET)
     res = ex.get_access_token()
     access_token = res['access_token']
     return access_token
+################################
+#获取部门列表
+def getdepartmentlist():
+    token = getToken()
+    depart = Department(access_token=token, operation="list")
+    res = depart.list_departs() #部门列表
+    if res['errcode'] == 0:
+        department_list = res['department']
+    else:
+        department_list = []
+    return department_list
+###################################
+#通过部门名称查询ID
+def searchdepartmentID(departmentname):
+    depart_list = getdepartmentlist()
+    if depart_list == []:
+        return '部门列表为空，无法检索'
+    else:
+        for item in depart_list:
+            if item['name'] == departmentname:
+                departmentID = item['id']
+                break
+        return departmentID
 
-"""
-#获取部门
-depart = Department(access_token = access_token,operation = "list")
-res = depart.list_departs()
-#print(res)
-"""
+
+
+
+
+
+
+
+'''
 def createUser(userInfo)
 
 user = User(access_token = access_token,
@@ -49,5 +74,5 @@ user = User(access_token = access_token,
                  userlist='')
 res2 = user.create_user()
 print(res2)
-
+'''
 
