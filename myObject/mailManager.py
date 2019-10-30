@@ -8,12 +8,61 @@ from tencent_exmail.ContactManagement.DepartmentMangement import Department
 # 公司ID
 CORP_ID = TestConf["MAIL_CORP_ID"]
 
-
 # 部门管理只需要用到通讯录应用的secret
 # 通讯录管理secret
 CONTACT_SECRET = TestConf["MAIL_CONTACT_SYNC_SECRET"]
 
+class mymailmanager:
+    def __init__(self):
+        self.token = self.getToken()
 
+    def getToken(self):
+        ex = GetAccessToken(corpid=CORP_ID, corpsecret=CONTACT_SECRET)
+        res = ex.get_access_token()
+        access_token = res['access_token']
+        return access_token
+
+    def getdepartmentlist(self):
+        depart = Department(access_token=self.token, operation="list")
+        res = depart.list_departs()  # 部门列表
+        if res['errcode'] == 0:
+            department_list = res['department']
+        else:
+            department_list = []
+        return department_list
+
+    def searchdepartmentID(self,departmentname):
+        depart_list = self.getdepartmentlist()
+        if depart_list == []:
+            return '部门列表为空，无法检索'
+        else:
+            for item in depart_list:
+                if item['name'] == departmentname:
+                    departmentID = item['id']
+                    break
+            return departmentID
+
+    def createUser(self,userInfo):
+        #token = getToken()
+        departmentID = self.searchdepartmentID(userInfo["department"])
+        user = User(
+            access_token=self.token,
+            operation='create',
+            userid=userInfo["mail"],
+            name=userInfo["username"],
+            department=[departmentID],
+            mobile=userInfo["phone"],
+            password="Test@1234",
+            cpwd_login=1,
+            gender=str(userInfo["gender"]),
+            # position='',
+            # tel = "",
+            slaves=[],
+            enable=1
+        )
+        res = user.create_user()
+        return res
+'''
 ###################################
 #获取秘钥
 def getToken():
@@ -58,15 +107,19 @@ def createUser(userInfo):
         mobile = userInfo["phone"],
         password = "Test@1234",
         cpwd_login=1,
-        gender =  userInfo["gender"]
+        gender =  str(userInfo["gender"]),
+        #position='',
+        #tel = "",
+        slaves=[],
+        enable=1
     )
-    res2 = user.create_user()
-    print(res2)
+    res = user.create_user()
+    return res
 
 
 
 
-'''
+
 def createUser(userInfo)
 
 user = User(access_token = access_token,
