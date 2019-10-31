@@ -1,6 +1,7 @@
 from CorpApi import *
 from weConf import *
 
+import re
 """
 CORP_ID,所在单位的ID
 CONTACT_SYNC_SECRET，所在应用的SECRET
@@ -39,6 +40,7 @@ class mywechatmanager():
             return department_new
         except ApiException as e:
             print(e.errCode, e.errMsg)
+            return  department_new
 #获取部门的ID
     def searchdepartmentID(self,departmentname):
         for item in self.departmentlist:
@@ -63,6 +65,7 @@ class mywechatmanager():
         except ApiException as e:
             print(e.errCode, e.errMsg)
 
+
     def create_user(self,userInfo,addmailflag):
         #数据初始化
         info =  {
@@ -81,6 +84,9 @@ class mywechatmanager():
             #print(response)
         except ApiException as e:
             response = (e.errCode, e.errMsg)
+            response = {"errcode":e.errCode,"errmsg":e.errMsg}
             #print(e.errCode, e.errMsg)
         return response
+
+
 

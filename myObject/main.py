@@ -1,5 +1,6 @@
 #from PyQt5 import (QtWidgets)
 #from PyQt5.QtWidgets import (QWidget, QApplication,QMainWindow)
+import re
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -113,32 +114,78 @@ class MainDialog(QWidget,Ui_Form):#重写页面
         if self.mailFlag == 0 and self.wechatFlag ==0:
             self.textEdit_result.setText("请选择需要开通的账号----------\n")
             return
-        self.textEdit_result.setText("开始添加----------\n")
+        #开始转换
+        self.textEdit_result.setText("开始----------\n开户姓名："+self.lineEdit_name.text())
+        #进行格式校验
+        result = self.checkingformat()
+        if result["errcode"] == 0:
+            self.textEdit_result.setText("格式校验完成，开始添加-------")
+        else:
+            self.textEdit_result.setText(result["errMsg"])
+            return
         ############################################################
         #采集基础信息，为后续添加做准备
         self.setUserInfo()
         #开通邮箱
         if self.mailFlag == 1:
-            self.textEdit_result.append("开始开通邮箱账户----------")
+            self.textEdit_result.append("邮箱账户创建----------")
             mail_result = self.mailManager.createUser(userInfo)
             if mail_result["errcode"] == 0:
-                self.textEdit_result.append("----------邮箱开通成功----------\n")
+                self.textEdit_result.append("----------邮箱开通成功----------\n账户名："+userInfo["mail"]+"\t初始密码：Test@1234")
             else:
                 self.textEdit_result.append("邮箱开通失败，失败原因："+mail_result["errmsg"]+"\n")
                 self.addMailToWechat = 0
+        self.textEdit_result.append("--------------------------------------\n")
         #开通企业微信
         if self.wechatFlag == 1:
-            self.textEdit_result.append("开始开通企业微信----------")
+            self.textEdit_result.append("企业微信账户创建----------")
             wechat_result = self.wechatManager.create_user(userInfo,self.addMailToWechat)
             if wechat_result["errcode"] == 0:
-                self.textEdit_result.append("----------开通成功----------\n")
+                self.textEdit_result.append("----------创建成功----------\n"+"账户名："+userInfo["wechatID"])
             else:
-                self.textEdit_result.append("开通失败，失败原因："+wechat_result["errmsg"]+"\n")
+                self.textEdit_result.append("创建失败，失败原因："+wechat_result["errmsg"]+"\n")
 
 
 
-
-        #create_user(userInfo,self)
+    def checkingformat(self):
+        name = userInfo["username"]
+        department = userInfo["department"]
+        phone = userInfo["phone"]
+        wechatid = userInfo["wechatID"]
+        wechatTag = userInfo["wechatTag"]
+        mail = userInfo["mail"]
+        #正则表达式公式
+        # 邮箱
+        pattern_mail = re.compile(r'\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*')
+        # ID
+        pattern_userid = re.compile(r'^[a-zA-Z][a-zA-Z0-9_]{4,16}$')
+        # 姓名
+        pattern_name = re.compile(r'^([\u4e00-\u9fa5]{2,20}|[a-zA-Z.\s]{2,20})$')
+        # 电话
+        pattern_phone = re.compile(r'1\d{10}')
+        if re.match(pattern_name,name) == None:
+            errMsg = "姓名格式错误，请检查"
+            error = -1
+        elif re.match(pattern_phone,phone) == None:
+            errMsg = "电话格式错误，请检查"
+            error = -1
+        elif re.match(pattern_mail,mail) == None:
+            errMsg = "邮件格式有误，请检查"
+            error = -1
+        elif re.match(pattern_userid,wechatid) == None:
+            errMsg = "企业微信账号格式有误，请检查"
+            error = -1
+        #elif department not in self.departmentname:
+        #   errMsg = "部门名称错误，请重新选择"
+        #    error = -1
+        elif wechatTag not in self.tagnamelist:
+            errMsg = "标签错误，请重新选择"
+            error = -1
+        else:
+            errMsg = "输入格式正确"
+            error = 0
+        res = {{"errcode":error,"errmsg":errMsg}}
+        return res
 
 
 
